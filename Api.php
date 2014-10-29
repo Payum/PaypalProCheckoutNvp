@@ -153,6 +153,19 @@ class Api
     );
 
     /**
+     * @var array
+     */
+    protected $refundOptions = array(
+        'username' => null,
+        'password' => null,
+        'partner' => null,
+        'vendor' => null,
+        'tender' => 'C',
+        'trxtype' => 'C',
+        'sandbox' => null,
+    );
+
+    /**
      * @param ClientInterface $client
      * @param array $options
      *
@@ -162,6 +175,7 @@ class Api
     {
         $this->client = $client;
         $this->options = array_replace($this->options, $options);
+        $this->refundOptions = array_replace($this->refundOptions, $options);
         
         if (true == empty($this->options['username'])) {
             throw new InvalidArgumentException('The username option must be set.');
@@ -188,6 +202,18 @@ class Api
     public function doPayment(Request $request)
     {
         $this->addOptions($request);
+
+        return $this->doRequest($request);
+    }
+
+    /**
+     * @param Request $request
+     *
+     * @return Response
+     */
+    public function doRefund(Request $request)
+    {
+        $this->addRefundOptions($request);
 
         return $this->doRequest($request);
     }
@@ -237,6 +263,19 @@ class Api
         $request->setField('VENDOR', $this->options['vendor']);
         $request->setField('TENDER', $this->options['tender']);
         $request->setField('TRXTYPE', $this->options['trxtype']);
+    }
+
+    /**
+     * @param Request $request
+     */
+    protected function addRefundOptions(Request $request)
+    {
+        $request->setField('USER', $this->refundOptions['username']);
+        $request->setField('PWD', $this->refundOptions['password']);
+        $request->setField('PARTNER', $this->refundOptions['partner']);
+        $request->setField('VENDOR', $this->refundOptions['vendor']);
+        $request->setField('TENDER', $this->refundOptions['tender']);
+        $request->setField('TRXTYPE', $this->refundOptions['trxtype']);
     }
 
     /**
