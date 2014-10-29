@@ -209,6 +209,18 @@ class Api
     /**
      * @param Request $request
      *
+     * @return Response
+     */
+    public function doRefund(Request $request)
+    {
+        $this->addRefundOptions($request);
+
+        return $this->doRequest($request);
+    }
+
+    /**
+     * @param Request $request
+     *
      * @throws \Payum\Core\Exception\Http\HttpException
      *
      * @return Response
